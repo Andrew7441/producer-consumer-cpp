@@ -54,12 +54,12 @@ int main() {
 	
 	std::thread consumerthread([]() {
 		for (int i = 1; i <= 20; i++) {
-			consumer();					   // Create a thread to consume values
+			consumer();					   
 		}
 	});
 
 	producerthread.join();				   // Wait for producer thread to finish
-	consumerthread.join();				   // Wait for consumer thread to finish
+	consumerthread.join();				   
 
 	std::cout << "Main Program Execution..." << std::endl;
 
