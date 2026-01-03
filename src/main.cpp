@@ -3,6 +3,7 @@
 #include<thread>
 #include<queue>
 #include<condition_variable>
+#include<chrono>
 
 std::mutex glock;																// Mutex for synchronization
 std::condition_variable cond_var;												// Condition Variable for producer-consumer signaling
@@ -21,6 +22,8 @@ void producer(int value) {
 	
 	lock.unlock();																// Unlock the mutex
 	cond_var.notify_one();														// Notify one waiting thread
+
+	std::this_thread::sleep_for(std::chrono::seconds(2));						// Simulate work/production time
 }
 
 void consumer() {
@@ -35,6 +38,10 @@ void consumer() {
 
 	lock.unlock();
 	cond_var.notify_one();
+
+	using namespace std::chrono_literals;										// Another Way to make thread sleep
+
+	std::this_thread::sleep_for(2000ms);					    
 }
 
 int main() {
