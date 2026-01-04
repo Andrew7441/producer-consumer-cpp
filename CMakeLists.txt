@@ -6,7 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Main executable
-add_executable(producer_consumer src/main.cpp)
+add_executable(producer_consumer
+    src/main.cpp
+)
 
 # Enable testing
 enable_testing()
@@ -20,7 +22,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # Test executable
-add_executable(tests tests/test_main.cpp)
+add_executable(tests tests/test_main.cpp  )
 target_link_libraries(tests gtest_main)
 include(GoogleTest)
 gtest_discover_tests(tests)
