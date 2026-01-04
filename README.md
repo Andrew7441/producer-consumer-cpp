@@ -4,6 +4,7 @@
 * [Prerequisites](#prerequisites)
 * [Scenarios](#scenarios)
 * [How to Run](#how-to-run)
+* [Unit Tests](#Unit-tests)
 * [Key Concepts](#key-concepts)
 
 ### Overview
@@ -37,6 +38,23 @@ Buffer Full
 
 g++ -std=c++17 producer_consumer.cpp -pthread -o producer_consumer
 ./producer_consumer
+
+### Unit Tests
+Unit tests verify the correctness of the buffer logic independently of threads.
+
+Uses GoogleTest framework.
+
+Tests include:
+
+Buffer starts empty.
+
+Producing a single item increases the size.
+
+Consuming an item decreases the size.
+
+To run unit tests with Cmake:
+
+use ctest from build directory or ./tests on Linux / Debug\tests.exe on Windows
 
 ### Key Concepts
 
