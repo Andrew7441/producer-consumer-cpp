@@ -20,7 +20,6 @@ void produce_one(int value) {
 
     lock.unlock();
     cond_var.notify_one();
-
 }
 
 void consume_one() {
@@ -35,7 +34,6 @@ void consume_one() {
 
     lock.unlock();
     cond_var.notify_one();
-    
 }
 
 void reset_buffer() {
