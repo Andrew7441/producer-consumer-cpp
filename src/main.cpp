@@ -1,140 +1,86 @@
-/*
-// Buffer Not Full Scenario
-#include<iostream>
-#include<mutex>
-#include<thread>
-#include<queue>
-#include<condition_variable>
-#include<chrono>
+#include "producer_consumer.h"
 
-std::mutex glock;																// Mutex for synchronization
-std::condition_variable cond_var;												// Condition Variable for producer-consumer signaling
-std::queue<int> buffer;															// Queue acts as a buffer
-const unsigned int MAX_BUFFER_SIZE = 10;										// Max size of buffer
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <thread>
 
+// "Buffer Not Full" scenario:
+// Producer and consumer run concurrently.
+static void run_buffer_not_full_scenario()
+{
+    std::cout << "Running: Buffer Not Full scenario\n";
 
-void producer(int value) {
-	std::unique_lock<std::mutex> lock(glock);									// Lock the mutex
-	cond_var.wait(lock,[]() { return buffer.size() < MAX_BUFFER_SIZE; });		// Wait until there is space in the buffer
-	
-	buffer.push(value);
+    std::thread producer_thread([] {
+        for (int i = 1; i <= 20; ++i) {
+            produce_one(i);
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+        });
+    
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::thread consumer_thread([] {
+        for (int i = 1; i <= 20; ++i) {
+            consume_one();
+            std::this_thread::sleep_for(std::chrono::seconds(2));
 
-	std::cout << "Producing: " << value << std::endl;
-	std::cout << "Buffer Size after produce: " << buffer.size() << std::endl;
-	
-	lock.unlock();																// Unlock the mutex
-	cond_var.notify_one();														// Notify one waiting thread
+        }
+        });
 
-	std::this_thread::sleep_for(std::chrono::seconds(2));						// Simulate work/production time
+    producer_thread.join();
+    consumer_thread.join();
+
+    std::cout << "Finished: Buffer Not Full scenario\n";
 }
 
-void consumer() {
-	std::unique_lock<std::mutex> lock(glock);
-	cond_var.wait(lock, []() { return buffer.size() > 0; });					// Wait until there is something in the buffer
+// "Buffer Full" scenario:
+// Producer and consumer 
+static void run_buffer_full_scenario()
+{
+    std::cout << "Running: Buffer Full scenario\n";
 
-	int value = buffer.front();
-	buffer.pop();
+    std::thread producer_thread([] {
+        for (int i = 1; i <= 20; ++i) {
+            produce_one(i);
+        }
+        });
 
-	std::cout << "Consuming: " << value << std::endl;
-	std::cout << "Buffer Size after consume: " << buffer.size() << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
-	lock.unlock();
-	cond_var.notify_one();
+    std::thread consumer_thread([] {
+        for (int i = 1; i <= 20; ++i) {
+            consume_one();
+        }
+        });
 
-	using namespace std::chrono_literals;										// Another Way to make thread sleep
+    producer_thread.join();
+    consumer_thread.join();
 
-	std::this_thread::sleep_for(2000ms);					    
+    std::cout << "Finished: Buffer Full scenario\n";
 }
 
-int main() {
+int main(int argc, char** argv)
+{
+    
+    std::string mode = "full";
+    if (argc > 1) mode = argv[1];
 
-	std::thread producerthread([](){
-		for (int i = 1; i <= 20; i++) {
-			producer(i);					// Create a thread to produce values
-		}
-	});
-	
-	std::thread consumerthread([]() {
-		for (int i = 1; i <= 20; i++) {
-			consumer();					   
-		}
-	});
+    if (mode == "full" || mode == "buffer-full" || mode == "buffer_full") {
+        run_buffer_full_scenario();
+    }
+    else if (mode == "not-full" || mode == "buffer-not-full" || mode == "not_full") {
+        run_buffer_not_full_scenario();
+    }
+    else {
+        std::cout << "Unknown mode: " << mode << "\n";
+        std::cout << "Usage:\n"
+            << "  " << argv[0] << "            # default: not-full\n"
+            << "  " << argv[0] << " not-full\n"
+            << "  " << argv[0] << " full\n";
+        return 1;
+    }
 
-	producerthread.join();				   // Wait for producer thread to finish
-	consumerthread.join();				   
-
-	std::cout << "Main Program Execution..." << std::endl;
-
-	return 0;
-}
-*/
-
-
-// Buffer Full Scenario
-#include<iostream>
-#include<mutex>
-#include<thread>
-#include<queue>
-#include<condition_variable>
-#include<chrono>
-
-std::mutex glock;																// Mutex for synchronization
-std::condition_variable cond_var;												// Condition Variable for producer-consumer signaling
-std::queue<int> buffer;															// Queue acts as a buffer
-const unsigned int MAX_BUFFER_SIZE = 10;										// Max size of buffer
-
-
-void producer(int value) {
-	std::unique_lock<std::mutex> lock(glock);									// Lock the mutex
-	cond_var.wait(lock, []() { return buffer.size() < MAX_BUFFER_SIZE; });		// Wait until there is space in the buffer
-
-	buffer.push(value);
-
-	std::cout << "Producing: " << value << std::endl;
-	std::cout << "Buffer Size after produce: " << buffer.size() << std::endl;
-
-	lock.unlock();																// Unlock the mutex
-	cond_var.notify_one();														// Notify one waiting thread
-
+    std::cout << "Main Program Execution complete.\n";
+    return 0;
 }
 
-void consumer() {
-	std::unique_lock<std::mutex> lock(glock);
-	cond_var.wait(lock, []() { return buffer.size() > 0; });					// Wait until there is something in the buffer
-
-	int value = buffer.front();
-	buffer.pop();
-
-	std::cout << "Consuming: " << value << std::endl;
-	std::cout << "Buffer Size after consume: " << buffer.size() << std::endl;
-
-	lock.unlock();
-	cond_var.notify_one();
-
-
-}
-
-int main() {
-
-	std::thread producerthread([]() {
-		for (int i = 1; i <= 20; i++) {
-			producer(i);					// Create a thread to produce values
-		}
-		});
-
-
-	std::this_thread::sleep_for(std::chrono::seconds(3));	// Delay before starting consumer thread
-
-	std::thread consumerthread([]() {
-		for (int i = 1; i <= 20; i++) {
-			consumer();
-		}
-		});
-
-	producerthread.join();				   // Wait for producer thread to finish
-	consumerthread.join();
-
-	std::cout << "Main Program Execution..." << std::endl;
-
-	return 0;
-}
