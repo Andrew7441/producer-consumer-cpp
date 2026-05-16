@@ -1,0 +1,8 @@
+[
+  {
+    "key": "f6",
+    "command": "workbench.action.tasks.runTask",
+    "args": "cpp:run",
+    "when": "editorTextFocus && !editorReadonly && !inDebugMode"
+  }
+]

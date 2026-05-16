@@ -21,8 +21,7 @@ Consumers wait if the buffer is empty.
 
 C++17 or later
 
-Multithreading support (Linux, macOS, Windows)
-
+Multithreading support 
 
 ### Scenarios
 
@@ -58,8 +57,8 @@ use ctest from build directory or ./tests on Linux / Debug\tests.exe on Windows
 
 ### Key Concepts
 
-- std::mutex – Protects shared buffer.
-- std::unique_lock – Flexible lock for condition variables.
-- std::condition_variable – Waits for buffer conditions.
-- Thread Sleep – Simulates production/consumption delays.
+- std::mutex ï¿½ Protects shared buffer.
+- std::unique_lock ï¿½ Flexible lock for condition variables.
+- std::condition_variable ï¿½ Waits for buffer conditions.
+- Thread Sleep ï¿½ Simulates production/consumption delays.
 

@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // compile with g++ and run the resulting program
+      "label": "cpp:run",
+      "type": "shell",
+      "command": "mkdir -p \"${workspaceFolder}/output\" && /usr/bin/g++ -std=gnu++23 -O2 -Wall -Wextra -g -I\"${workspaceFolder}/include\" \"${workspaceFolder}/src/main.cpp\" \"${workspaceFolder}/src/producer_consumer.cpp\" -pthread -o \"${workspaceFolder}/output/producer_consumer\" && \"${workspaceFolder}/output/producer_consumer\"",
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      // compile a debug binary (no optimisation) used by launch.json
+      "label": "cpp:debugBuild",
+      "type": "shell",
+      "command": "mkdir -p \"${fileDirname}/output\" && /usr/bin/g++ -std=gnu++23 -O0 -g \"${file}\" -o \"${fileDirname}/output/${fileBasenameNoExtension}\"",
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
