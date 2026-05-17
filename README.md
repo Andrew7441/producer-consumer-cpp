@@ -1,64 +1,103 @@
-## Table of Contents
+# Producer-Consumer C++
 
-* [Overview](#overview)
-* [Prerequisites](#prerequisites)
-* [Scenarios](#scenarios)
-* [How to Run](#how-to-run)
-* [Unit Tests](#Unit-tests)
-* [Key Concepts](#key-concepts)
+A small C++ multithreading project that demonstrates the classic **Producer-Consumer problem** using a shared bounded buffer.
 
-### Overview
+The project shows how one thread can safely produce data while another thread consumes it without race conditions.
 
-The Producer-Consumer Problem is a classic concurrency problem where producers generate data and consumers retrieve it from a shared buffer. 
+---
 
-Synchronization ensures:
+## Problem It Solves
 
-Producers wait if the buffer is full.
+When multiple threads access the same shared data, they can interfere with each other.
 
-Consumers wait if the buffer is empty.
+This project solves that by making sure:
 
-### Prerequisites
+- The producer waits if the buffer is full.
+- The consumer waits if the buffer is empty.
+- Only one thread accesses the buffer at a time.
 
-C++17 or later
+This is handled using:
 
-Multithreading support 
+- `std::mutex`
+- `std::unique_lock`
+- `std::condition_variable`
+- `std::queue`
 
-### Scenarios
+---
 
-Buffer Not Full
-- Producer and consumer operate at similar speed.
-- Buffer never exceeds maximum size (10).
+## How It Works
 
-Buffer Full
-- Producer starts first and fills the buffer.
-- Consumer starts after a delay to demonstrate full-buffer behavior.
+The producer adds integers to a shared queue.
 
-### How to run
+The consumer removes integers from that queue.
 
-g++ -std=c++17 producer_consumer.cpp -pthread -o producer_consumer
-./producer_consumer
+The buffer has a maximum size, so the producer cannot add forever. If the buffer is full, the producer waits. If the buffer is empty, the consumer waits.
 
-### Unit Tests
-Unit tests verify the correctness of the buffer logic independently of threads.
+Basic flow:
 
-Uses GoogleTest framework.
+```text
+Producer Thread -> Shared Buffer -> Consumer Thread
+```
+## Project Structure
 
-Tests include:
+include/
+  producer_consumer.h      # Function declarations
 
-Buffer starts empty.
+src/
+  producer_consumer.cpp    # Shared buffer and synchronization logic
+  main.cpp                 # Runs the demo scenarios
 
-Producing a single item increases the size.
+tests/
+  test_main.cpp            # Unit tests
 
-Consuming an item decreases the size.
+## Scenarios
 
-To run unit tests with Cmake:
+- Buffer Full
 
-use ctest from build directory or ./tests on Linux / Debug\tests.exe on Windows
+The producer starts first and fills the buffer.
 
-### Key Concepts
+This demonstrates what happens when the producer is faster than the consumer.
 
-- std::mutex � Protects shared buffer.
-- std::unique_lock � Flexible lock for condition variables.
-- std::condition_variable � Waits for buffer conditions.
-- Thread Sleep � Simulates production/consumption delays.
+- Buffer Not Full
 
+The producer and consumer run at a similar speed.
+
+This demonstrates normal producer-consumer behavior where the buffer does not fill up.
+
+## Build and Run
+
+From the project root:
+```txt
+cmake -S . -B build
+cmake --build build
+./build/producer_consumer
+```
+Then choose:
+full
+or:
+not-full
+
+## Run Tests
+
+cd build
+ctest
+
+## Key Concepts
+
+Mutex
+
+A mutex protects the shared buffer so only one thread can use it at a time.
+
+Condition Variable
+
+A condition variable lets a thread sleep until a condition becomes true.
+
+In this project:
+
+Producer waits until the buffer is not full.
+Consumer waits until the buffer is not empty.
+Producer-Consumer Pattern
+
+This pattern is used in real systems like task queues, job processors, and thread pools.
+
+A producer adds work to a queue, and a consumer removes and processes that work.

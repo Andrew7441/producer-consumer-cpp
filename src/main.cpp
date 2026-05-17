@@ -85,4 +85,8 @@ int main()
     std::cout << "Main Program Execution complete.\n";
     return 0;
 }
-
+/*
+Thread ordering is not guaranteed because the OS decides which thread runs at each moment. 
+Even if i created the producer first then consumer second, once both exist, the OS scheduler can choose either one
+Thread execution order is nondeterministic. Creating a thread first does not guarantee it will run first or finish first. The OS scheduler controls when each thread runs, so outputs from multiple threads can appear in different valid orders.
+*/
