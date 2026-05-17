@@ -18,16 +18,17 @@ static void run_buffer_not_full_scenario()
             produce_one(i); // produce values from 1 - 20
             std::this_thread::sleep_for(std::chrono::seconds(2)); // slows producer down
         }
-        });
+    });
     
     std::this_thread::sleep_for(std::chrono::seconds(2));  //delay consumer start
+    
     std::thread consumer_thread([] { // start the consumer thread
         for (int i = 1; i <= 20; ++i) {
             consume_one(); // removes one value from the buffer
             std::this_thread::sleep_for(std::chrono::seconds(2)); // then sleep
 
         }
-        });
+    });
         
     //call join so the main thread waits for the worker thread to finish before continuing/exiting
     //if i dont call join main might finish before thrad finish
@@ -49,7 +50,7 @@ static void run_buffer_full_scenario()
         }
     });
 
-    std::this_thread::sleep_for(std::chrono::seconds(3)); // lets proucer fill the buffer first
+    std::this_thread::sleep_for(std::chrono::seconds(3)); // lets producer fill the buffer first
 
     std::thread consumer_thread([] { // starts the consumer thread
         for (int i = 1; i <= 20; ++i) {
